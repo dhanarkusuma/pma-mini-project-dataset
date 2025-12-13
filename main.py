@@ -3,14 +3,13 @@ import ada_boost as ab
 import xg_boost as xgb
 import evaluator as ev
 import boostInterface as bi
-import parameter_tuning as pt
 
 
 class main:
     def __init__(self):
         self.value = "Hello, World!"
 
-    def run(self):
+    def run_single_param(self):
         boost = bi.BoostInterface()
 
         scenarios = [
@@ -70,6 +69,7 @@ class main:
 
         print("hasil tanpa parameter tuning untuk adaboost dan xgboost")
         data = dp.DataProcessing()
+        data.initialize_data()
         for scenario in scenarios:
             boost = ab.Adaboost(data)
             boost.initialize(scenario)
@@ -106,6 +106,7 @@ class main:
             print("\n\n")
         pass
 
+    def run_multi_param(self):
         scenarios = [
             {
                 "scenario": "free",
@@ -160,8 +161,10 @@ class main:
                 "reg_lambda": [1.0, 5.0, 10.0],
             },
         ]
-        print("hasil menggunakan parameter tuning menggunakan gridCV")
 
+        print("hasil menggunakan parameter tuning menggunakan gridCV")
+        data = dp.DataProcessing()
+        data.initialize_data()
         for scenario in scenarios:
             boost = ab.Adaboost(data)
             boost.initialize_parameter_tunning(scenario)
@@ -201,5 +204,6 @@ class main:
 
 if __name__ == "__main__":
     app = main()
-    print(app.run())
+    app.run_single_param()
+    
 
