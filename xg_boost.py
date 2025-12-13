@@ -67,8 +67,8 @@ class XGBoost(boostInterface.BoostInterface):
             "subsample": params["subsample"],
             "colsample_bytree": params["colsample_bytree"],
             "gamma": params["gamma"],
-            "reg_alpha": [0.0, 0.1],
-            "reg_lambda": [1.0, 5.0],
+            "reg_alpha": params["reg_alpha"],
+            "reg_lambda": params["reg_lambda"],
         }
         grid = GridSearchCV(
             estimator=self.model,
