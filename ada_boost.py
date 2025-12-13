@@ -7,7 +7,7 @@ import numpy as np
 
 
 class Adaboost(boostInterface.BoostInterface):
-    def __init__(self, data: dp.DataProcesssing):
+    def __init__(self, data: dp.DataProcessing):
         self.data = data
         self.scenario = None
 

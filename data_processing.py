@@ -3,9 +3,9 @@
 import pandas as pd
 
 
-class DataProcesssing:
-    def __init__(self, data):
-        self.data = data
+class DataProcessing:
+    def __init__(self):
+        pass
 
     def initialize_data(self):
         # get data from test.csv and train.csv put to class variable
