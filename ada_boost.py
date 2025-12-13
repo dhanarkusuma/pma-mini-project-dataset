@@ -1,5 +1,6 @@
 from sklearn.ensemble import AdaBoostRegressor
 from sklearn.tree import DecisionTreeRegressor
+from sklearn.model_selection import GridSearchCV
 
 import data_processing as dp
 import boostInterface
@@ -18,7 +19,7 @@ class Adaboost(boostInterface.BoostInterface):
         self.loss = dict_args["loss"]
         self.max_depth = dict_args["max_depth"]
         self.random_state = dict_args["random_state"]
-        X = self.get_X(self.data.get_x_train())
+        self.X = self.get_X(self.data.get_x_train())
 
         estimator = DecisionTreeRegressor(
             max_depth=self.max_depth, random_state=self.random_state
@@ -30,7 +31,7 @@ class Adaboost(boostInterface.BoostInterface):
             loss=self.loss,
             random_state=42,
         )
-        self.model.fit(X, self.data.get_y_train())
+        self.model.fit(self.X, self.data.get_y_train())
 
     def get_model(self):
         return self.model
@@ -52,3 +53,24 @@ class Adaboost(boostInterface.BoostInterface):
         X_test = self.data.get_x_test()
         X_test = self.get_X(X_test)
         return self.model.predict(X_test)
+
+    def initialize_parameter_tunning(self):
+        param_grid = {
+            "n_estimators": [100, 300, 500],
+            "learning_rate": [0.01, 0.05, 0.1, 0.5],
+            "loss": ["linear", "square", "exponential"],
+            "estimator__max_depth": [1, 2, 3, 5],
+            "estimator__min_samples_split": [2, 5, 10],
+        }
+
+        grid = GridSearchCV(
+            estimator=self.model,
+            param_grid=param_grid,
+            scoring="neg_root_mean_squared_error",
+            cv=5,
+            n_jobs=-1,
+            verbose=1,
+        )
+
+        grid.fit(self.X, self.data.get_y_train())
+        self.model = grid.best_estimator_

@@ -1,6 +1,8 @@
 import boostInterface
 import data_processing as dp
 import xgboost as xgb
+from sklearn.model_selection import GridSearchCV
+
 import numpy as np
 
 
@@ -20,7 +22,7 @@ class XGBoost(boostInterface.BoostInterface):
         self.gamma = dict_args["gamma"]
         self.reg_alpha = dict_args["reg_alpha"]
         self.reg_lambda = dict_args["reg_lambda"]
-        X = self.get_X(self.data.get_x_train())
+        self.X = self.get_X(self.data.get_x_train())
 
         self.model = xgb.XGBRegressor(
             objective="reg:squarederror",
@@ -34,7 +36,7 @@ class XGBoost(boostInterface.BoostInterface):
             reg_lambda=self.reg_lambda,  # L2
             random_state=self.random_state,
         )
-        self.model.fit(X, self.data.get_y_train())
+        self.model.fit(self.X, self.data.get_y_train())
 
     def get_model(self):
         return self.model
@@ -56,3 +58,25 @@ class XGBoost(boostInterface.BoostInterface):
         X_test = self.data.get_x_test()
         X_test = self.get_X(X_test)
         return self.model.predict(X_test)
+
+    def initialize_parameter_tunning(self):
+        param_grid = {
+            "n_estimators": [200, 400, 600],
+            "learning_rate": [0.01, 0.05, 0.1],
+            "max_depth": [3, 5, 7],
+            "subsample": [0.8, 1.0],
+            "colsample_bytree": [0.8, 1.0],
+            "gamma": [0, 0.1, 0.3],
+            "reg_alpha": [0.0, 0.1],
+            "reg_lambda": [1.0, 5.0],
+        }
+        grid = GridSearchCV(
+            estimator=self.model,
+            param_grid=param_grid,
+            scoring="neg_root_mean_squared_error",
+            cv=5,
+            verbose=1,
+            n_jobs=-1,
+        )
+        grid.fit(self.X, self.data.get_y_train())
+        self.model = grid.best_estimator_
