@@ -59,14 +59,14 @@ class XGBoost(boostInterface.BoostInterface):
         X_test = self.get_X(X_test)
         return self.model.predict(X_test)
 
-    def initialize_parameter_tunning(self):
+    def initialize_parameter_tunning(self, params):
         param_grid = {
-            "n_estimators": [200, 400, 600],
-            "learning_rate": [0.01, 0.05, 0.1],
-            "max_depth": [3, 5, 7],
-            "subsample": [0.8, 1.0],
-            "colsample_bytree": [0.8, 1.0],
-            "gamma": [0, 0.1, 0.3],
+            "n_estimators": params["n_estimator"],
+            "learning_rate": params["learning_rate"],
+            "max_depth": params["max_depth"],
+            "subsample": params["subsample"],
+            "colsample_bytree": params["colsample_bytree"],
+            "gamma": params["gamma"],
             "reg_alpha": [0.0, 0.1],
             "reg_lambda": [1.0, 5.0],
         }

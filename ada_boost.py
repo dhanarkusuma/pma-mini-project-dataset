@@ -54,18 +54,12 @@ class Adaboost(boostInterface.BoostInterface):
         X_test = self.get_X(X_test)
         return self.model.predict(X_test)
 
-    def initialize_parameter_tunning(self):
-        param_grid = {
-            "n_estimators": [100, 300, 500],
-            "learning_rate": [0.01, 0.05, 0.1, 0.5],
-            "loss": ["linear", "square", "exponential"],
-            "estimator__max_depth": [1, 2, 3, 5],
-            "estimator__min_samples_split": [2, 5, 10],
-        }
+    def initialize_parameter_tunning(self, params_grid):
+        
 
         grid = GridSearchCV(
             estimator=self.model,
-            param_grid=param_grid,
+            param_grid=params_grid,
             scoring="neg_root_mean_squared_error",
             cv=5,
             n_jobs=-1,
