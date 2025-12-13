@@ -169,7 +169,7 @@ class main:
             boost = ab.Adaboost(data)
             boost.initialize_parameter_tunning(scenario)
             print(
-                f"ada boost successfully trained for scenario {scenario} with parameter tuning using gridCV"
+                f"ada boost successfully trained for scenario {scenario} with parameter tuning using gridCV dan model AdaBoost"
             )
             self.evaluator = ev.Evaluator(boost.prediction_value(), data.get_y_test())
             # RMSE
@@ -187,7 +187,7 @@ class main:
             boost = xgb.XGBoost(data)
             boost.initialize_parameter_tunning(scenario)
             print(
-                f"ada boost successfully trained for scenario {scenario} with parameter tuning using gridCV"
+                f"ada boost successfully trained for scenario {scenario} with parameter tuning using gridCV dan model XGBoost"
             )
             self.evaluator = ev.Evaluator(boost.prediction_value(), data.get_y_test())
             # RMSE
