@@ -222,6 +222,10 @@ print(results_df.to_markdown(index=False))
 
 
 
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import make_scorer
+
+
 # Definisikan metrik R2 sebagai scoring utama untuk Grid Search
 r2_scorer = make_scorer(r2_score)
 
