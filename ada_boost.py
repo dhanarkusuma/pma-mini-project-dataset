@@ -1,76 +1,54 @@
-# using library sklearn.ensemble import AdaBoostClassifier
-# input parameter adjusted to adaboost classifier
-from sklearn.ensemble import AdaBoostClassifier, GradientBoostingClassifier
 from sklearn.ensemble import AdaBoostRegressor
+from sklearn.tree import DecisionTreeRegressor
 
 import data_processing as dp
 import boostInterface
+import numpy as np
 
 
 class Adaboost(boostInterface.BoostInterface):
-    def __init__(
-        self,
-        data: dp.DataProcesssing,
-    ):
+    def __init__(self, data: dp.DataProcesssing):
         self.data = data
-        self.model = None
+        self.scenario = None
 
     def initialize(self, dict_args):
-        X = self.data.get_x_train()
-        n_estimators = dict_args["n_estimators"]
-        learning_rate = dict_args["learning_rate"]
+        self.scenario = dict_args["scenario"]
+        self.n_estimators = dict_args["n_estimators"]
+        self.learning_rate = dict_args["learning_rate"]
+        self.loss = dict_args["loss"]
+        self.max_depth = dict_args["max_depth"]
+        self.random_state = dict_args["random_state"]
+        X = self.get_X(self.data.get_x_train())
 
-        match dict_args["scenario"]:
-            case "x1":
-                X = X[0]
-            case "x2":
-                X = X[1]
-            case "x1x2":
-                pass
-            case "tunning":
-                pass
-
-        self.adaBoost = AdaBoostRegressor(
-            n_estimators=n_estimators,
-            learning_rate=learning_rate,
+        estimator = DecisionTreeRegressor(
+            max_depth=self.max_depth, random_state=self.random_state
+        )
+        self.model = AdaBoostRegressor(
+            estimator=estimator,
+            n_estimators=self.n_estimators,
+            learning_rate=self.learning_rate,
+            loss=self.loss,
             random_state=42,
         )
-        pass
+        self.model.fit(X, self.data.get_y_train())
+
+    def get_model(self):
+        return self.model
+
+    def get_X(self, X):
+        match self.scenario:
+            case "x1":
+                return X[0]
+            case "x2":
+                return X[1]
+            case "x1x2":
+                return X
+            case _:
+                pass
 
     def prediction_value(self):
-        pass
-
-
-# import pandas as pd
-# from sklearn.model_selection import train_test_split
-# from sklearn.ensemble import AdaBoostRegressor
-# from sklearn.metrics import mean_squared_error, mean_absolute_error, root_mean_squared_error
-
-
-# url ="https://raw.githubusercontent.com/mirsabayuprasetyo-bot/data_machine_learning/refs/heads/main/data_time_series.csv"
-# df = pd.read_csv(url)
-
-# display(df.head())
-
-# x = df[['X1 (curah hujan, cc)']]
-# y = df['Y (jumlah kasus)']
-
-# x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.2, random_state = 1)
-
-# adaBoost = AdaBoostRegressor(n_estimators=100, learning_rate=1.0, random_state=42)
-
-# adaBoost.fit(x_train, y_train)
-
-
-# y_pred = adaBoost.predict(x_test)
-
-# print(y_pred)
-
-# rmse = root_mean_squared_error(y_test, y_pred)
-# mae = mean_absolute_error(y_test, y_pred)
-# mse = mean_squared_error(y_test, y_pred)
-
-# print(f"rmse : {rmse}")
-# print(f"mae : {mae}")
-# print(f"mse : {mse}")
-
+        if self.model == "None":
+            return np.array([])
+        X_test = self.data.get_x_test()
+        X_test = self.get_X(X_test)
+        return self.model.predict(X_test)
