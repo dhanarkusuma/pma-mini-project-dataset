@@ -159,8 +159,9 @@ class main:
                 "reg_alpha": [0.0, 0.1, 0.5],
                 "reg_lambda": [1.0, 5.0, 10.0],
             },
-            print("hasil menggunakan parameter tuning menggunakan gridCV"),
         ]
+        print("hasil menggunakan parameter tuning menggunakan gridCV")
+
         for scenario in scenarios:
             boost = ab.Adaboost(data)
             boost.initialize_parameter_tunning(scenario)
