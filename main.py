@@ -3,7 +3,6 @@ import ada_boost as ab
 import xg_boost as xgb
 import evaluator as ev
 import boostInterface as bi
-import parameter_tuning as pt
 
 
 class main:
@@ -70,6 +69,8 @@ class main:
 
         print("hasil tanpa parameter tuning untuk adaboost dan xgboost")
         data = dp.DataProcessing()
+        data.initialize_data()
+
         for scenario in scenarios:
             boost = ab.Adaboost(data)
             boost.initialize(scenario)
@@ -162,12 +163,17 @@ class main:
         ]
         print("hasil menggunakan parameter tuning menggunakan gridCV")
 
+        data = dp.DataProcessing()
+        data.initialize_data()
+
         for scenario in scenarios:
             boost = ab.Adaboost(data)
             boost.initialize_parameter_tunning(scenario)
             print(
                 f"ada boost successfully trained for scenario {scenario} with parameter tuning using gridCV"
             )
+
+            return
             self.evaluator = ev.Evaluator(boost.prediction_value(), data.get_y_test())
             # RMSE
             print(f"nilai rmse untuk ada boost : {self.evaluator.get_rmse()}")
@@ -201,5 +207,5 @@ class main:
 
 if __name__ == "__main__":
     app = main()
-    print(app.run())
+    app.run()
 

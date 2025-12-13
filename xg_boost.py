@@ -10,19 +10,28 @@ class XGBoost(boostInterface.BoostInterface):
     def __init__(self, data: dp.DataProcessing):
         self.data = data
         self.scenario = None
+        self.model = xgb.XGBRegressor()
+
+        param_grid = {
+            "n_estimators": [200, 400],
+            "learning_rate": [0.05, 0.1],
+        }
+        self.model_tune = GridSearchCV(estimator=self.model, param_grid=param_grid)
+        self.predict_ft = 0
+        self.X = self.get_X(self.data.get_x_train())
+        self.X_test = self.get_X(self.data.get_x_test())
 
     def initialize(self, dict_args):
         self.scenario = dict_args["scenario"]
-        self.n_estimators = dict_args["n_estimators"]
+        self.n_estimators = dict_args["n_estimator"]
         self.learning_rate = dict_args["learning_rate"]
         self.max_depth = dict_args["max_depth"]
-        self.random_state = dict_args["random_state"]
+        self.random_state = 42
         self.subsample = dict_args["subsample"]
         self.colsample_bytree = dict_args["colsample_bytree"]
         self.gamma = dict_args["gamma"]
         self.reg_alpha = dict_args["reg_alpha"]
         self.reg_lambda = dict_args["reg_lambda"]
-        self.X = self.get_X(self.data.get_x_train())
 
         self.model = xgb.XGBRegressor(
             objective="reg:squarederror",
@@ -36,6 +45,7 @@ class XGBoost(boostInterface.BoostInterface):
             reg_lambda=self.reg_lambda,  # L2
             random_state=self.random_state,
         )
+
         self.model.fit(self.X, self.data.get_y_train())
 
     def get_model(self):
@@ -43,10 +53,12 @@ class XGBoost(boostInterface.BoostInterface):
 
     def get_X(self, X):
         match self.scenario:
+            case "free":
+                return X.drop(columns=["X2_lama_hujan", "X1_curah_hujan"])
             case "x1":
-                return X[0]
+                return X.drop(columns=["X2_lama_hujan"])
             case "x2":
-                return X[1]
+                return X.drop(columns=["X1_curah_hujan"])
             case "x1x2":
                 return X
             case _:
@@ -70,7 +82,20 @@ class XGBoost(boostInterface.BoostInterface):
             "reg_alpha": params["reg_alpha"],
             "reg_lambda": params["reg_lambda"],
         }
-        grid = GridSearchCV(
+        self.model = xgb.XGBRegressor(
+            objective="reg:squarederror",
+            n_estimators=self.n_estimators,
+            learning_rate=self.learning_rate,
+            max_depth=self.max_depth,
+            subsample=self.subsample,
+            colsample_bytree=self.colsample_bytree,
+            gamma=self.gamma,
+            reg_alpha=self.reg_alpha,  # L1
+            reg_lambda=self.reg_lambda,  # L2
+            random_state=self.random_state,
+        )
+
+        model_tune = GridSearchCV(
             estimator=self.model,
             param_grid=param_grid,
             scoring="neg_root_mean_squared_error",
@@ -78,5 +103,9 @@ class XGBoost(boostInterface.BoostInterface):
             verbose=1,
             n_jobs=-1,
         )
-        grid.fit(self.X, self.data.get_y_train())
-        self.model = grid.best_estimator_
+        model_tune.fit(self.X, self.data.get_y_train())
+        self.model = model_tune.best_estimator_
+
+    def predict_fine_tune(self):
+        print(self.X_test)
+        return self.model_tune.best_estimator_.predict(self.X_test)
