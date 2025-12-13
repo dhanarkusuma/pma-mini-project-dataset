@@ -3,18 +3,22 @@
 
 import pandas as pd
 
-class DataProcesssing:
 
-    def __init__(self, train_path='datasets/train.csv', test_path='datasets/test.csv', target_col='Y_jumlah_kasus'):
-
+class DataProcessing:
+    def __init__(
+        self,
+        train_path="datasets/train.csv",
+        test_path="datasets/test.csv",
+        target_col="Y_jumlah_kasus",
+    ):
         self.train_path = train_path
         self.test_path = test_path
         self.target_col = target_col
-        
-        self.X_train = None
-        self.y_train = None
-        self.X_test = None
-        self.y_test = None
+
+        self.X_train = pd.DataFrame([])
+        self.y_train = pd.DataFrame([])
+        self.X_test = pd.DataFrame([])
+        self.y_test = pd.DataFrame([])
 
     def _initial_preprocess(self, df):
         """
@@ -23,16 +27,18 @@ class DataProcesssing:
         2. Mengganti nama kolom.
         """
         # Mengubah kolom 'Bulan' menjadi tipe datetime (format '%b-%y') dan menjadikannya index
-        df['Bulan'] = pd.to_datetime(df['Bulan'], format='%b-%y')
-        df.set_index('Bulan', inplace=True)
-        
+        df["bulan"] = pd.to_datetime(df["bulan"], format="%b-%y")
+        df.set_index("bulan", inplace=True)
+
         # Ganti nama kolom (Asumsi urutan kolom adalah [X1, X2, Y] setelah 'Bulan' diangkat menjadi index)
         try:
-            df.columns = ['X1_curah_hujan', 'X2_lama_hujan', self.target_col]
+            df.columns = ["X1_curah_hujan", "X2_lama_hujan", self.target_col]
         except ValueError:
-             print("PERINGATAN: Jumlah kolom tidak sesuai setelah set_index. Periksa data CSV.")
-             return df
-        
+            print(
+                "PERINGATAN: Jumlah kolom tidak sesuai setelah set_index. Periksa data CSV."
+            )
+            return df
+
         return df
 
     def create_time_series_features(self, df):
@@ -40,15 +46,15 @@ class DataProcesssing:
         Membuat fitur deret waktu (Musiman, Tren, Lag) dari index datetime.
         """
         # Fitur Musiman dan Tren
-        df['bulan'] = df.index.month
-        df['tahun'] = df.index.year
-        df['kuartal'] = df.index.quarter
-        
+        df["bulan"] = df.index.month
+        df["tahun"] = df.index.year
+        df["kuartal"] = df.index.quarter
+
         # Fitur Lag (nilai Y bulan sebelumnya), sangat penting untuk forecasting
-        df['Y_lag_1'] = df[self.target_col].shift(1)
-        df['Y_lag_2'] = df[self.target_col].shift(2)
-        df['Y_lag_3'] = df[self.target_col].shift(3)
-        
+        df["Y_lag_1"] = df[self.target_col].shift(1)
+        df["Y_lag_2"] = df[self.target_col].shift(2)
+        df["Y_lag_3"] = df[self.target_col].shift(3)
+
         return df
 
     def initialize_data(self):
@@ -64,7 +70,7 @@ class DataProcesssing:
         except FileNotFoundError as e:
             print(f"ERROR: File tidak ditemukan: {e}")
             return
-        
+
         # 2. Pre-processing Awal
         df_train = self._initial_preprocess(df_train.copy())
         df_test = self._initial_preprocess(df_test.copy())
@@ -74,21 +80,25 @@ class DataProcesssing:
         df_full = pd.concat([df_train, df_test])
         train_idx = df_train.index
         test_idx = df_test.index
-        
+
         # 4. Pembuatan Fitur (Feature Engineering) pada data gabungan
         df_full_feat = self.create_time_series_features(df_full.copy())
-        
+
         # 5. Memisahkan Kembali Data Training dan Testing
         df_train_feat = df_full_feat.loc[train_idx].copy()
         df_test_feat = df_full_feat.loc[test_idx].copy()
 
         # 6. Data Cleaning
         # Hapus baris NaN yang muncul akibat fitur lag (biasanya 3 baris pertama di train set)
-        df_train_feat.dropna(inplace=True) 
-        df_test_feat.dropna(inplace=True) 
+        df_train_feat.dropna(inplace=True)
+        df_test_feat.dropna(inplace=True)
 
-        print(f"Data Training setelah feature engineering & cleaning: {df_train_feat.shape}")
-        print(f"Data Testing setelah feature engineering & cleaning: {df_test_feat.shape}")
+        print(
+            f"Data Training setelah feature engineering & cleaning: {df_train_feat.shape}"
+        )
+        print(
+            f"Data Testing setelah feature engineering & cleaning: {df_test_feat.shape}"
+        )
 
         # 7. Membagi X (Fitur) dan y (Target)
         # Semua kolom selain kolom target adalah fitur (X)
@@ -96,10 +106,10 @@ class DataProcesssing:
 
         self.X_train = df_train_feat[features]
         self.y_train = df_train_feat[self.target_col]
-        
+
         self.X_test = df_test_feat[features]
         self.y_test = df_test_feat[self.target_col]
-        
+
         print("Inisialisasi data selesai.")
 
     def get_x_train(self):
@@ -113,4 +123,3 @@ class DataProcesssing:
 
     def get_y_test(self):
         return self.y_test
-    
