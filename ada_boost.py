@@ -1,20 +1,44 @@
 # using library sklearn.ensemble import AdaBoostClassifier
 # input parameter adjusted to adaboost classifier
 from sklearn.ensemble import AdaBoostClassifier, GradientBoostingClassifier
+from sklearn.ensemble import AdaBoostRegressor
 
 import data_processing as dp
 import boostInterface
 
+
 class Adaboost(boostInterface.BoostInterface):
-    def __init__(self, data: dp.DataProcesssing,):
+    def __init__(
+        self,
+        data: dp.DataProcesssing,
+    ):
         self.data = data
+        self.model = None
 
+    def initialize(self, dict_args):
+        X = self.data.get_x_train()
+        n_estimators = dict_args["n_estimators"]
+        learning_rate = dict_args["learning_rate"]
 
-    def initialize(self, choose_scenario:str):
+        match dict_args["scenario"]:
+            case "x1":
+                X = X[0]
+            case "x2":
+                X = X[1]
+            case "x1x2":
+                pass
+            case "tunning":
+                pass
+
+        self.adaBoost = AdaBoostRegressor(
+            n_estimators=n_estimators,
+            learning_rate=learning_rate,
+            random_state=42,
+        )
         pass
+
     def prediction_value(self):
         pass
-
 
 
 # import pandas as pd
@@ -49,3 +73,4 @@ class Adaboost(boostInterface.BoostInterface):
 # print(f"rmse : {rmse}")
 # print(f"mae : {mae}")
 # print(f"mse : {mse}")
+

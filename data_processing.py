@@ -1,5 +1,7 @@
 # this class responsible for data processing tasks
 # like creating lag value, data cleanign and so on
+import pandas as pd
+
 
 class DataProcesssing:
     def __init__(self, data):
@@ -11,10 +13,14 @@ class DataProcesssing:
         pass
 
     def get_x_train(self):
-        pass
+        return pd.DataFrame([])
+
     def get_y_train(self):
-        pass
+        return pd.DataFrame([])
+
     def get_x_test(self):
-        pass
+        return pd.DataFrame([])
+
     def get_y_test(self):
-        pass   
+        return pd.DataFrame([])
+
