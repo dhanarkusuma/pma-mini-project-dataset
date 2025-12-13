@@ -17,7 +17,6 @@ class main :
 
         boost = bi.BoostInterface()
 
-        
         boost = ab.Adaboost(self.data)
         boost.initialize("X1")
         self.value = boost.prediction_value()   
@@ -26,6 +25,9 @@ class main :
         boost.initialize("X1")
         self.value = boost.prediction_value()
 
+        #rmse
+        self.evaluator = ev.Evaluator(boost.prediction_value(), self.data.get_y_test())
+        
         
         return self.value
     
