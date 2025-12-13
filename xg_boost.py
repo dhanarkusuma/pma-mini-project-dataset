@@ -36,6 +36,9 @@ class XGBoost(boostInterface.BoostInterface):
         )
         self.model.fit(X, self.data.get_y_train())
 
+    def get_model(self):
+        return self.model
+
     def get_X(self, X):
         match self.scenario:
             case "x1":
