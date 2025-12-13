@@ -18,8 +18,6 @@ class Adaboost(boostInterface.BoostInterface):
         }
 
         self.model_tune = GridSearchCV(estimator=self.model, param_grid=param_grid)
-        self.X = self.get_X(self.data.get_x_train())
-        self.X_test = self.get_X(self.data.get_x_test())
 
     def initialize(self, dict_args):
         self.scenario = dict_args["scenario"]
@@ -40,7 +38,8 @@ class Adaboost(boostInterface.BoostInterface):
             random_state=42,
         )
 
-        self.model.fit(self.X, self.data.get_y_train())
+        X = self.get_X(self.data.get_x_train())
+        self.model.fit(X, self.data.get_y_train())
 
     def get_model(self):
         return self.model
@@ -61,26 +60,24 @@ class Adaboost(boostInterface.BoostInterface):
     def prediction_value(self):
         if self.model == "None":
             return np.array([])
-        X_test = self.data.get_x_test()
-        X_test = self.get_X(X_test)
+        X_test = self.get_X(self.data.get_x_test())
         return self.model.predict(X_test)
 
     def initialize_parameter_tunning(self, params):
         params_grid = {
             "n_estimators": params["n_estimator"],
             "learning_rate": params["learning_rate"],
-            "max_depth": params["max_depth"],
         }
 
         estimator = DecisionTreeRegressor(
-            max_depth=self.max_depth, random_state=self.random_state
+            max_depth=params["max_depth"][0], random_state=42
         )
 
         self.model = AdaBoostRegressor(
             estimator=estimator,
-            n_estimators=self.n_estimators,
-            learning_rate=self.learning_rate,
-            loss=self.loss,
+            n_estimators=params["n_estimator"][0],
+            learning_rate=params["learning_rate"][0],
+            loss=params["loss"][0],
             random_state=42,
         )
 
@@ -93,10 +90,6 @@ class Adaboost(boostInterface.BoostInterface):
             verbose=1,
         )
 
-        model_tune.fit(self.X, self.data.get_y_train())
+        X = self.get_X(self.data.get_x_train())
+        model_tune.fit(X, self.data.get_y_train())
         self.model = model_tune.best_estimator_
-        print(self.X_test)
-
-    def predict_fine_tune(self):
-        print(self.X_test)
-        return self.model_tune.best_estimator_.predict(self.X_test)

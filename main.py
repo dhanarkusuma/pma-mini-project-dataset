@@ -204,6 +204,4 @@ class main:
 
 if __name__ == "__main__":
     app = main()
-    app.run_single_param()
-    
-
+    app.run_multi_param()
