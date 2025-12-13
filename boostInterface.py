@@ -9,7 +9,3 @@ class BoostInterface:
     @abstractmethod
     def prediction_value(self):
         pass
-
-    @abstractmethod
-    def parameter_tuning(self, param_grid, scoring, cv):
-        pass

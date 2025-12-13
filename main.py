@@ -3,6 +3,7 @@ import ada_boost as ab
 import xg_boost as xgb
 import evaluator as ev
 import boostInterface as bi
+import parameter_tuning as pt
 
 class main : 
     def __init__(self):
@@ -73,6 +74,7 @@ class main :
             print("--------------------------------------------------")
             print("--------------------------------------------------")
             print("\n\n")
+            param_tuning = 
         pass
         print("hasil menggunakan parameter tuning menggunakan gridCV")
 
