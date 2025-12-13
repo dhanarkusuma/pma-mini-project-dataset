@@ -1,14 +1,15 @@
-from abc import  abstractmethod
+from abc import abstractmethod
+import numpy as np
+
 
 class BoostInterface:
-
     @abstractmethod
-    def initilize(self,  choose_scenario:str):
+    def initilize(self, choose_scenario: str):
         pass
 
     @abstractmethod
     def prediction_value(self):
-        pass
+        return np.array([])
 
     @abstractmethod
     def parameter_tuning(self, param_grid, scoring, cv):
