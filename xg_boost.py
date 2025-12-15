@@ -1,4 +1,4 @@
-import boostInterface
+import boost_interface
 import data_processing as dp
 import xgboost as xgb
 from sklearn.model_selection import GridSearchCV
@@ -6,7 +6,7 @@ from sklearn.model_selection import GridSearchCV
 import numpy as np
 
 
-class XGBoost(boostInterface.BoostInterface):
+class XGBoost(boost_interface.BoostInterface):
     def __init__(self, data: dp.DataProcessing):
         self.data = data
         self.scenario = None
