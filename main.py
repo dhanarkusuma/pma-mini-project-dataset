@@ -3,6 +3,7 @@ import ada_boost as ab
 import xg_boost as xgb
 import evaluator as ev
 import boostInterface as bi
+import numpy as np
 from nicegui import ui
 from matplotlib import pyplot as plt
 from pathlib import Path
@@ -147,6 +148,14 @@ class main:
             print(f"nilai mape untuk ada boost : {self.evaluator.get_mape()}")
             # R2 Score
             print(f"nilai r2 score untuk ada boost : {self.evaluator.get_r2_score()}")
+
+            print(f"overfitting check")
+            overfitting_train = ev.Evaluator(boost.prediction_value(), data.get_y_train())
+            overfitting_test = ev.Evaluator(boost.prediction_value(), data.get_y_test())
+            overfitting_train_value = overfitting_train.get_r2_score()
+            overfitting_test_value = overfitting_test.get_r2_score()
+            print(f"overfitting check :{np.abs(overfitting_train_value - overfitting_test_value)} for scenario {scenario} using ada boost")
+
             print("--------------------------------------------------")
             print("--------------------------------------------------")
             evaluator_value = {"scenario": scenario["scenario"],
@@ -172,6 +181,13 @@ class main:
             print(f"nilai mape untuk xg boost : {self.evaluator.get_mape()}")
             # R2 Score
             print(f"nilai r2 score untuk xg boost : {self.evaluator.get_r2_score()}")
+
+            print(f"overfitting check")
+            # overfitting_train = ev.Evaluator(boost.prediction_value(), data.get_y_train())
+            # overfitting_test = ev.Evaluator(boost.prediction_value(), data.get_y_test())
+            # overfitting_train_value = overfitting_train.get_r2_score()
+            # overfitting_test_value = overfitting_test.get_r2_score()
+            # print(f"overfitting check :{np.abs(overfitting_train_value - overfitting_test_value)} for scenario {scenario} using xg boost")
             print("--------------------------------------------------")
             print("--------------------------------------------------")
             print("\n\n")
@@ -461,6 +477,6 @@ class main:
 
 if __name__ in {"__main__", "__mp_main__"}:
     app = main()
-    # app.run_single_param()
+    app.run_single_param()
     # app.run_multi_param()
-    app.run_ui()
+    # app.run_ui()
