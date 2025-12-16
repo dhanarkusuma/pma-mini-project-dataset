@@ -107,18 +107,8 @@ class DataProcessing:
         # Semua kolom selain kolom target adalah fitur (X)
         features = [col for col in df_train_feat.columns if col != self.target_col]
 
-        x_train, x_validation, y_train, y_validation = train_test_split(
-            df_train_feat.drop(columns=[self.target_col]),
-            df_train_feat[self.target_col],
-            test_size=0.2,
-            random_state=42,
-        )
-
-        self.x_train = x_train
-        self.y_train = y_train
-
-        self.x_validation = x_validation
-        self.y_validation = y_validation
+        self.x_train = df_train_feat[features]
+        self.y_train = df_train_feat[self.target_col]
 
         self.x_test = df_test_feat[features]
         self.y_test = df_test_feat[self.target_col]
@@ -136,9 +126,3 @@ class DataProcessing:
 
     def get_y_test(self):
         return self.y_test
-
-    def get_x_validation(self):
-        return self.x_validation
-
-    def get_y_validation(self):
-        return self.y_validation

@@ -70,12 +70,6 @@ class XGBoost(boost_interface.BoostInterface):
         X_test = self.get_X(self.data.get_x_test())
         return self.model.predict(X_test)
 
-    def prediction_value_validation(self):
-        if self.model == "None":
-            return np.array([])
-        X_validation = self.get_X(self.data.get_x_validation())
-        return self.model.predict(X_validation)
-
     def initialize_parameter_tunning(self, params):
         param_grid = {
             "n_estimators": params["n_estimator"],
