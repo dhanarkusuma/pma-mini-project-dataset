@@ -67,8 +67,8 @@ class Adaboost(boost_interface.BoostInterface):
     def prediction_value_validation(self):
         if self.model == "None":
             return np.array([])
-        X_test = self.get_X(self.data.get_x_validation())
-        return self.model.predict(X_test)
+        X_validation = self.get_X(self.data.get_x_validation())
+        return self.model.predict(X_validation)
 
     def initialize_parameter_tunning(self, params):
         params_grid = {
