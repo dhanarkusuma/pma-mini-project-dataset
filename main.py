@@ -548,7 +548,7 @@ class main:
 
 if __name__ in {"__main__", "__mp_main__"}:
     app = main()
-    
-    app.run_single_param()
+
+    # app.run_single_param()
     # app.run_multi_param()
-    # app.run_ui()
+    app.run_ui()

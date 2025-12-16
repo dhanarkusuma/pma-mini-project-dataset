@@ -87,7 +87,6 @@ class DataProcessing:
         # 4. Pembuatan Fitur (Feature Engineering) pada data gabungan
         df_full_feat = self.create_time_series_features(df_full.copy())
 
-        
         # 5. Memisahkan Kembali Data Training dan Testing
         df_train_feat = df_full_feat.loc[train_idx].copy()
         df_test_feat = df_full_feat.loc[test_idx].copy()
@@ -108,7 +107,7 @@ class DataProcessing:
         # Semua kolom selain kolom target adalah fitur (X)
         features = [col for col in df_train_feat.columns if col != self.target_col]
 
-        x_train, x_test, y_train, y_test = train_test_split(
+        x_train, x_validation, y_train, y_validation = train_test_split(
             df_train_feat.drop(columns=[self.target_col]),
             df_train_feat[self.target_col],
             test_size=0.2,
@@ -118,11 +117,11 @@ class DataProcessing:
         self.x_train = x_train
         self.y_train = y_train
 
-        self.x_test = x_test
-        self.y_test = y_test
+        self.x_validation = x_validation
+        self.y_validation = y_validation
 
-        self.x_validation = 
-        self.y_validation = df_test_feat[self.target_col]
+        self.x_test = df_test_feat[features]
+        self.y_test = df_test_feat[self.target_col]
 
         print("Inisialisasi data selesai.")
 
@@ -137,9 +136,9 @@ class DataProcessing:
 
     def get_y_test(self):
         return self.y_test
-    
+
     def get_x_validation(self):
         return self.x_validation
-    
+
     def get_y_validation(self):
         return self.y_validation
