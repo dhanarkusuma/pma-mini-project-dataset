@@ -121,7 +121,7 @@ class DataProcessing:
         self.x_test = x_test
         self.y_test = y_test
 
-        self.x_validation = df_test_feat[features]
+        self.x_validation = 
         self.y_validation = df_test_feat[self.target_col]
 
         print("Inisialisasi data selesai.")
