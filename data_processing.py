@@ -2,6 +2,7 @@
 # like creating lag value, data cleanign and so on
 
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
 
 class DataProcessing:
@@ -15,10 +16,12 @@ class DataProcessing:
         self.test_path = test_path
         self.target_col = target_col
 
-        self.X_train = pd.DataFrame([])
+        self.x_train = pd.DataFrame([])
         self.y_train = pd.DataFrame([])
-        self.X_test = pd.DataFrame([])
+        self.x_test = pd.DataFrame([])
         self.y_test = pd.DataFrame([])
+        self.x_validation = pd.DataFrame([])
+        self.y_validation = pd.DataFrame([])
 
     def _initial_preprocess(self, df):
         """
@@ -84,6 +87,7 @@ class DataProcessing:
         # 4. Pembuatan Fitur (Feature Engineering) pada data gabungan
         df_full_feat = self.create_time_series_features(df_full.copy())
 
+        
         # 5. Memisahkan Kembali Data Training dan Testing
         df_train_feat = df_full_feat.loc[train_idx].copy()
         df_test_feat = df_full_feat.loc[test_idx].copy()
@@ -104,22 +108,38 @@ class DataProcessing:
         # Semua kolom selain kolom target adalah fitur (X)
         features = [col for col in df_train_feat.columns if col != self.target_col]
 
-        self.X_train = df_train_feat[features]
-        self.y_train = df_train_feat[self.target_col]
+        x_train, y_train, x_test, y_test = train_test_split(
+            df_train_feat.drop(columns=[self.target_col]),
+            df_train_feat[self.target_col],
+            test_size=0.2,
+            random_state=42,
+        )
 
-        self.X_test = df_test_feat[features]
-        self.y_test = df_test_feat[self.target_col]
+        self.x_train = x_train
+        self.y_train = y_train
+
+        self.x_test = x_test
+        self.y_test = y_test
+
+        self.x_validation = df_test_feat[features]
+        self.y_validation = df_test_feat[self.target_col]
 
         print("Inisialisasi data selesai.")
 
     def get_x_train(self):
-        return self.X_train
+        return self.x_train
 
     def get_y_train(self):
         return self.y_train
 
     def get_x_test(self):
-        return self.X_test
+        return self.x_test
 
     def get_y_test(self):
         return self.y_test
+    
+    def get_x_validation(self):
+        return self.x_validation
+    
+    def get_y_validation(self):
+        return self.y_validation
