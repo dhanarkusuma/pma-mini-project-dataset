@@ -195,12 +195,14 @@ class main:
             print(f"nilai r2 score untuk ada boost : {self.evaluator.get_r2_score()}")
 
             print(f"overfitting check")
+            overfitting_validation = ev.Evaluator(
+                boost.prediction_value_validation(), data.get_y_validation()
+            )
             overfitting_test = ev.Evaluator(boost.prediction_value(), data.get_y_test())
-            overfitting_evaluation = ev.Evaluator(boost.prediction_value_validation(), data.get_y_validation())
+            overfitting_validation_value = overfitting_validation.get_r2_score()
             overfitting_test_value = overfitting_test.get_r2_score()
-            overfitting_evaluation_value = overfitting_evaluation.get_r2_score()
+            print(f"r2 validation value : {overfitting_validation_value}")
             print(f"r2 test value : {overfitting_test_value}")
-            print(f"r2 evaluation value : {overfitting_evaluation_value}")
 
             print("--------------------------------------------------")
             print("--------------------------------------------------")
@@ -231,12 +233,14 @@ class main:
             print(f"nilai r2 score untuk xg boost : {self.evaluator.get_r2_score()}")
 
             print(f"overfitting check")
+            overfitting_validation = ev.Evaluator(
+                boost.prediction_value_validation(), data.get_y_validation()
+            )
             overfitting_test = ev.Evaluator(boost.prediction_value(), data.get_y_test())
-            overfitting_evaluation = ev.Evaluator(boost.prediction_value_validation(), data.get_y_validation())
+            overfitting_validation_value = overfitting_validation.get_r2_score()
             overfitting_test_value = overfitting_test.get_r2_score()
-            overfitting_evaluation_value = overfitting_evaluation.get_r2_score()
+            print(f"r2 validation value : {overfitting_validation_value}")
             print(f"r2 test value : {overfitting_test_value}")
-            print(f"r2 evaluation value : {overfitting_evaluation_value}")
             print("--------------------------------------------------")
             print("--------------------------------------------------")
             print("\n\n")

@@ -42,6 +42,7 @@ class XGBoost(boost_interface.BoostInterface):
             reg_alpha=self.reg_alpha,  # L1
             reg_lambda=self.reg_lambda,  # L2
             random_state=self.random_state,
+            tree_method="hist",
         )
 
         X = self.get_X(self.data.get_x_train())
@@ -91,6 +92,7 @@ class XGBoost(boost_interface.BoostInterface):
             reg_alpha=params["reg_alpha"][0],  # L1
             reg_lambda=params["reg_lambda"][0],  # L2
             random_state=42,
+            tree_method="hist",
         )
 
         model_tune = GridSearchCV(

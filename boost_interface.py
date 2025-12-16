@@ -12,6 +12,10 @@ class BoostInterface:
         return np.array([])
 
     @abstractmethod
+    def prediction_value_validation(self):
+        return np.array([])
+
+    @abstractmethod
     def predict_fine_tune(self):
         return np.array([])
 

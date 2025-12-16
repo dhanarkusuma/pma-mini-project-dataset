@@ -25,7 +25,7 @@ class Adaboost(boost_interface.BoostInterface):
         self.n_estimators = dict_args["n_estimator"]
         self.learning_rate = dict_args["learning_rate"]
         self.loss = dict_args["loss"]
-        self.max_depth = dict_args["max_depth"]
+        self.max_depth = 1
         self.random_state = 42
 
         estimator = DecisionTreeRegressor(
@@ -36,7 +36,7 @@ class Adaboost(boost_interface.BoostInterface):
             n_estimators=self.n_estimators,
             learning_rate=self.learning_rate,
             loss=self.loss,
-            random_state=42,
+            random_state=self.random_state,
         )
 
         X = self.get_X(self.data.get_x_train())
@@ -63,7 +63,7 @@ class Adaboost(boost_interface.BoostInterface):
             return np.array([])
         X_test = self.get_X(self.data.get_x_test())
         return self.model.predict(X_test)
-    
+
     def prediction_value_validation(self):
         if self.model == "None":
             return np.array([])
