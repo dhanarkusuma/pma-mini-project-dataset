@@ -4,11 +4,11 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
 
 import data_processing as dp
-import boostInterface
+import boost_interface
 import numpy as np
 
 
-class Adaboost(boostInterface.BoostInterface):
+class Adaboost(boost_interface.BoostInterface):
     def __init__(self, data: dp.DataProcessing):
         self.data = data
         self.scenario = None
