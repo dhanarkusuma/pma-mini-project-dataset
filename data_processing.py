@@ -108,7 +108,7 @@ class DataProcessing:
         # Semua kolom selain kolom target adalah fitur (X)
         features = [col for col in df_train_feat.columns if col != self.target_col]
 
-        x_train, y_train, x_test, y_test = train_test_split(
+        x_train, x_test, y_train, y_test = train_test_split(
             df_train_feat.drop(columns=[self.target_col]),
             df_train_feat[self.target_col],
             test_size=0.2,
