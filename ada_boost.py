@@ -13,6 +13,7 @@ class Adaboost(boost_interface.BoostInterface):
         self.data = data
         self.scenario = None
         self.model = AdaBoostRegressor()
+        self.best_params = {}
         param_grid = {
             "n_estimators": [200, 400],
             "learning_rate": [0.05, 0.1],
@@ -70,15 +71,10 @@ class Adaboost(boost_interface.BoostInterface):
             "learning_rate": params["learning_rate"],
         }
 
-        estimator = DecisionTreeRegressor(
-            max_depth=params["max_depth"][0], random_state=42
-        )
+        estimator = DecisionTreeRegressor(max_depth=1, random_state=42)
 
         self.model = AdaBoostRegressor(
             estimator=estimator,
-            n_estimators=params["n_estimator"][0],
-            learning_rate=params["learning_rate"][0],
-            loss=params["loss"][0],
             random_state=42,
         )
 
@@ -86,7 +82,7 @@ class Adaboost(boost_interface.BoostInterface):
             estimator=self.model,
             param_grid=params_grid,
             scoring="neg_root_mean_squared_error",
-            cv=5,
+            cv=3,
             n_jobs=-1,
             verbose=1,
         )
@@ -94,3 +90,9 @@ class Adaboost(boost_interface.BoostInterface):
         X = self.get_X(self.data.get_x_train())
         model_tune.fit(X, self.data.get_y_train())
         self.model = model_tune.best_estimator_
+        self.best_params = model_tune.best_params_
+        print("adaboost best_params_")
+        print(model_tune.best_params_)
+
+    def get_tunning_best_params(self):
+        return self.best_params

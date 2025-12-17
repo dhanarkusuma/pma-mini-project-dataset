@@ -11,6 +11,7 @@ class XGBoost(boost_interface.BoostInterface):
         self.data = data
         self.scenario = None
         self.model = xgb.XGBRegressor()
+        self.best_params = {}
 
         param_grid = {
             "n_estimators": [200, 400],
@@ -82,14 +83,6 @@ class XGBoost(boost_interface.BoostInterface):
         }
         self.model = xgb.XGBRegressor(
             objective="reg:squarederror",
-            n_estimators=params["n_estimator"][0],
-            learning_rate=params["learning_rate"][0],
-            max_depth=params["max_depth"][0],
-            subsample=params["subsample"][0],
-            colsample_bytree=params["colsample_bytree"][0],
-            gamma=params["gamma"][0],
-            reg_alpha=params["reg_alpha"][0],  # L1
-            reg_lambda=params["reg_lambda"][0],  # L2
             random_state=42,
         )
 
@@ -104,3 +97,9 @@ class XGBoost(boost_interface.BoostInterface):
         X = self.get_X(self.data.get_x_train())
         model_tune.fit(X, self.data.get_y_train())
         self.model = model_tune.best_estimator_
+        self.best_params = model_tune.best_params_
+        print("xgboost best_params_")
+        print(model_tune.best_params_)
+
+    def get_tunning_best_params(self):
+        return self.best_params

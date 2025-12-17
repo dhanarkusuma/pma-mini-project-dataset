@@ -8,6 +8,10 @@ class BoostInterface:
         pass
 
     @abstractmethod
+    def get_tunning_best_params(self):
+        return {}
+
+    @abstractmethod
     def prediction_value(self):
         return np.array([])
 

@@ -386,8 +386,9 @@ class main:
         for scenario in scenarios:
             boost = ab.Adaboost(data)
             boost.initialize_parameter_tunning(scenario)
+            print(f"Best tunning params adaboost: {boost.get_tunning_best_params()}")
             print(
-                f"ada boost successfully trained for scenario {scenario} with parameter tuning using gridCV dan model AdaBoost"
+                f"adaboost successfully trained for scenario {scenario} with parameter tuning using gridCV dan model AdaBoost"
             )
             self.evaluator = ev.Evaluator(boost.prediction_value(), data.get_y_test())
             # RMSE
@@ -408,26 +409,28 @@ class main:
                 "mae": self.evaluator.get_mae(),
                 "mape": self.evaluator.get_mape(),
                 "r2_score": self.evaluator.get_r2_score(),
+                "best_params": boost.get_tunning_best_params(),
             }
             scenario_value.append(evaluator_value)
             print("--------------------------------------------------")
             print("--------------------------------------------------")
             boost = xgb.XGBoost(data)
             boost.initialize_parameter_tunning(scenario)
+            print(f"Best tunning params xgboost: {boost.get_tunning_best_params()}")
             print(
-                f"ada boost successfully trained for scenario {scenario} with parameter tuning using gridCV dan model XGBoost"
+                f"xgboost successfully trained for scenario {scenario} with parameter tuning using gridCV dan model XGBoost"
             )
             self.evaluator = ev.Evaluator(boost.prediction_value(), data.get_y_test())
             # RMSE
-            print(f"nilai rmse untuk ada boost : {self.evaluator.get_rmse()}")
+            print(f"nilai rmse untuk xgboost : {self.evaluator.get_rmse()}")
             # MSE
-            print(f"nilai mse untuk ada boost : {self.evaluator.get_mse()}")
+            print(f"nilai mse untuk xgboost : {self.evaluator.get_mse()}")
             # MAE
-            print(f"nilai mae untuk ada boost : {self.evaluator.get_mae()}")
+            print(f"nilai mae untuk xgboost : {self.evaluator.get_mae()}")
             # MAPE
-            print(f"nilai mape untuk ada boost : {self.evaluator.get_mape()}")
+            print(f"nilai mape untuk xgboost : {self.evaluator.get_mape()}")
             # R2 Score
-            print(f"nilai r2 score untuk ada boost : {self.evaluator.get_r2_score()}")
+            print(f"nilai r2 score untuk xgboost : {self.evaluator.get_r2_score()}")
             evaluator_value = {
                 "scenario": scenario["scenario"],
                 "algorithm": "XGBoost",
@@ -436,6 +439,7 @@ class main:
                 "mae": self.evaluator.get_mae(),
                 "mape": self.evaluator.get_mape(),
                 "r2_score": self.evaluator.get_r2_score(),
+                "best_params": boost.get_tunning_best_params(),
             }
             scenario_value.append(evaluator_value)
 
